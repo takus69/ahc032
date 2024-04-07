@@ -144,7 +144,7 @@ fn main() {
     let mut ans = Answer::new(board.clone(), stamps.clone());
 
     // 候補作成
-    let trial = 50;
+    let trial = 500;
     let mut candidate: Vec<(Answer, usize)> = Vec::new();
     for _ in 0..(trial*2-1) {
         let ans2 = ans.rand();
