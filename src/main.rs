@@ -32,6 +32,21 @@ impl Board {
         }
         after as i64 - before as i64
     }
+
+    fn trial(&self, pos: &Pos, stamp: &Stamp) -> i64 {
+        let mut before = 0;
+        let mut after = 0;
+        for i in 0..3 {
+            for j in 0..3 {
+                before += self.a[pos.i+i][pos.j+j];
+                let mut a = self.a[pos.i+i][pos.j+j] + stamp.s[i][j];
+                a %= MOD;
+                after += a;
+            }
+        }
+        after as i64 - before as i64
+    }
+
 }
 
 #[derive(Debug, Clone)]
@@ -85,8 +100,32 @@ fn main() {
     for i in 0..m {
         stamps.push(Stamp { s: s[i].clone() });
     }
-    let diff = board.stamp(&Pos{ i: 0, j: 0 }, &stamps[0]);
-    // ans.add(0, &Pos{ i: 0, j: 0 });
+    for _ in 0..k {
+        let mut max_diff = 0;
+        let mut max_mi = 0;
+        let mut max_pos = Pos{ i: 0, j: 0 };
+        for mi in 0..m {
+            for i in 0..(n-2) {
+                for j in 0..(n-2) {
+                    let pos = Pos{ i, j };
+                    let diff = board.trial(&pos, &stamps[mi]);
+                    if max_diff < diff {
+                        max_diff = diff;
+                        max_mi = mi;
+                        max_pos = pos;
+                    }
+                }
+            }
+        }
+        // println!("{} {} {:?}", max_diff, max_mi, max_pos);
+        if max_diff > 0 {
+            board.stamp(&max_pos, &stamps[max_mi]);
+            ans.add(max_mi, &max_pos);
+        } else {
+            break;
+        }
+
+    }
     ans.ans();
 
     eprintln!("{{ \"score\": {} }}", board.score());
