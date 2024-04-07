@@ -144,7 +144,7 @@ fn main() {
     let mut ans = Answer::new(board.clone(), stamps.clone());
 
     // 候補作成
-    let trial = 10;
+    let trial = 50;
     let mut candidate: Vec<(Answer, usize)> = Vec::new();
     for _ in 0..(trial*2-1) {
         let ans2 = ans.rand();
@@ -177,6 +177,11 @@ fn main() {
     }
     candidate.sort_by_key(|&(_, score)| score);
     let (ans, score) = &candidate[candidate.len()-1];
+    let mut ans = ans.clone();
+    for _ in 0..(k-ans.m.len()) {
+        let flg = ans.best();
+        if !flg { break; }
+    }
     ans.ans();
 
     eprintln!("{{ \"score\": {} }}", ans.board.score());
